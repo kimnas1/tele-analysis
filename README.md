@@ -5,7 +5,36 @@ This repo contains:
 - **LLM pipelines** for `RCA_OOD` and `GENERAL` questions (Phase 2).
 - A clean, reproducible **single-command** runner that outputs **SampleSubmission-format** CSVs per model, then merges them.
 
-## Install
+## Quickstart: inference (recommended)
+
+Run end-to-end inference (Phase 1 + Phase 2; RCA_RULE + RCA_OOD + GENERAL) and produce a SampleSubmission-format CSV.
+
+```bash
+python3 scripts/run_model.py <model_tag> <data_dir> <out_dir> [lora_model_dir]
+```
+
+Example (Kaggle):
+```bash
+python3 scripts/run_model.py qwen7b /kaggle/input/rca-5g /kaggle/working/out /kaggle/input/qwen7b-lora-rule-traces
+```
+
+Output:
+- `<out_dir>/<model_tag>/submission_<model_tag>.csv`
+  - Only that model’s submission column is filled; all other columns remain `placeholder`.
+
+### Merge per-model submissions
+
+If you run multiple models (one per command), merge them into one final `submission.csv`:
+```bash
+python3 scripts/merge_submissions.py <data_dir> <out_dir> <merged_csv>
+```
+
+Example (Kaggle):
+```bash
+python3 scripts/merge_submissions.py /kaggle/input/rca-5g /kaggle/working/out /kaggle/working/submission.csv
+```
+
+## Install (local dev)
 
 ```bash
 python3 -m venv .venv
@@ -15,7 +44,8 @@ pip install -r requirements.txt
 
 GPU notes:
 - Install **PyTorch** separately for your CUDA version.
-- LoRA train/infer in this repo uses **Unsloth** (`import unsloth`). Install it per Unsloth’s official instructions for your platform.
+- LoRA inference uses **Transformers + PEFT**.
+- (Optional) LoRA training can use **Transformers/TRL** or **Unsloth** (see scripts in `tools/`).
 
 ## Data layout
 
@@ -28,41 +58,20 @@ For the runner scripts below, pass `data_dir` that contains (filenames are confi
 ## Model artifacts
 
 LoRA adapters are expected as directories:
-- `models/qwen7b_lora_rule_traces/`
-- `models/qwen1.5b_lora_rule_traces/`
+- Any PEFT adapter directory (must contain `adapter_config.json` + `adapter_model.safetensors`)
 
 Note: `models/` is intentionally **gitignored** (large weights). Download/place adapters locally (or host them on HuggingFace / GitHub release assets) and point `configs/pipeline.json` at the local paths.
 
 If you only have zips, unzip them into `models/` and update `configs/pipeline.json` accordingly.
 
-## One-command generation (per model)
+## Optional: run only a slice (debug)
 
-Run one model and get a per-model submission file (only that model column is filled; all others remain `placeholder`):
-
-```bash
-python3 scripts/run_model.py <model_tag> <data_dir> <out_dir>
-```
-
-Examples:
-```bash
-python3 scripts/run_model.py qwen7b   /kaggle/input/rca-5g  /kaggle/working/out
-python3 scripts/run_model.py qwen1.5b /kaggle/input/rca-5g  /kaggle/working/out
-python3 scripts/run_model.py qwen32b  /kaggle/input/rca-5g  /kaggle/working/out
-```
-
-Outputs:
-- `out_dir/<model_tag>/submission_<model_tag>.csv`
-- Routing/debug files in `out_dir/<model_tag>/` (Phase2 split into RULE/RCA_OOD/GENERAL).
-
-### Merge per-model submissions
+`scripts/run_model.py` supports an optional `run_only` selector (or env var `RUN_ONLY`) for faster debugging:
+- `RCA_RULE_PHASE2`: only Phase 2 routed RCA_RULE questions
+- `RCA_RULE_ONLY`: only RCA_RULE (Phase 1 + Phase 2), everything else placeholder
 
 ```bash
-python3 scripts/merge_submissions.py <data_dir> <out_dir> <merged_csv>
-```
-
-Example:
-```bash
-python3 scripts/merge_submissions.py /kaggle/input/rca-5g /kaggle/working/out /kaggle/working/submission.csv
+python3 scripts/run_model.py <model_tag> <data_dir> <out_dir> [lora_model_dir] RCA_RULE_ONLY
 ```
 
 ## Reproduce from scratch (optional)
@@ -82,14 +91,15 @@ python3 tools/generate_rule_trace_corpus.py
 Outputs go to:
 - `tools/rule_trace_corpus/`
 
-### 2) Fine-tune LoRA on rule traces (Unsloth)
+### 2) Fine-tune LoRA on rule traces
 
 Edit the config block at the top of:
-- `tools/finetune_qwen_lora_rule_traces_unsloth.py`
+- `tools/finetune_qwen_lora_rule_traces.py` (Transformers/TRL)
+- or `tools/finetune_qwen_lora_rule_traces_unsloth.py` (Unsloth)
 
 Then run:
 ```bash
-python3 tools/finetune_qwen_lora_rule_traces_unsloth.py
+python3 tools/finetune_qwen_lora_rule_traces.py
 ```
 
 The resulting adapter directory can be used by the runner via `configs/pipeline.json`.
