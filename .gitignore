@@ -68,3 +68,6 @@ answers_*.csv
 submission_*.csv
 qwen*.csv
 .~lock.*.csv#
+
+# Old repo backups
+.git_old_*
