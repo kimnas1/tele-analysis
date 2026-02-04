@@ -37,8 +37,6 @@ import time
 from dataclasses import asdict
 from typing import Any, Optional
 
-import requests
-
 
 # =============================================================================
 # ⚙️  EASY CONFIGURATION - CHANGE THESE VALUES
@@ -61,7 +59,7 @@ BACKEND = "HF_LOCAL"  # "HF_LOCAL" | "NONE"
 
 
 # HF local model (Kaggle/H100). Imports torch/transformers only if used.
-HF_MODEL_NAME = os.environ.get("HF_MODEL_NAME", "Qwen/Qwen3-32B")
+HF_MODEL_NAME = os.environ.get("HF_MODEL_NAME", "Qwen/Qwen2.5-7B-Instruct")
 HF_DTYPE = os.environ.get("HF_DTYPE", "bfloat16")  # "bfloat16" | "float16"
 HF_DEVICE_MAP = os.environ.get("HF_DEVICE_MAP", "auto")
 
