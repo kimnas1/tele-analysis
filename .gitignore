@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.ipynb_checkpoints/
+
+# Virtualenvs
+.venv/
+venv/
+env/
+ENV/
+
+# Env / secrets
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cert
+*.kdbx
+
+# OS / editors
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Outputs / caches
+out/
+outs/
+output/
+outputs/
+runs/
+logs/
+*.log
+*.tmp
+*.cache
+.cache/
+wandb/
+mlruns/
+
+# Generated corpora / training artifacts
+tools/rule_trace_corpus/
+tools/rule_trace_corpus_phase2_llm/
+tools/rule_trace_corpus_merged/
+tools/lora_qwen_rule_traces/
+tools/lora_qwen_rule_traces_unsloth/
+
+# Large model artifacts (host separately, e.g. HuggingFace or GitHub release assets)
+models/
+
+# Challenge data / local submissions (keep out of git)
+SampleSubmission.csv
+phase_*.csv
+answers_*.csv
+submission_*.csv
+qwen*.csv
+.~lock.*.csv#

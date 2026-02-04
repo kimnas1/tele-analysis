@@ -1,0 +1,53 @@
+{
+  "schema_version": "v1",
+  "filenames": {
+    "sample_submission": "SampleSubmission.csv",
+    "phase1_questions": "phase_1_test.csv",
+    "phase2_questions": "phase_2_test.csv",
+    "reasoned_predict": "reasoned_predict.py"
+  },
+  "run": {
+    "seed": 42,
+    "limit_base_ids": null
+  },
+  "models": {
+    "qwen7b": {
+      "submission_column": "Qwen2.5-7B-Instruct",
+      "rca_rule": {
+        "mode": "lora",
+        "lora_model_dir": "models",
+        "max_new_tokens": 512,
+        "temperature": 0.1,
+        "decision_variants": [
+          "Decision:\n- TriggeredRule selects the fixed label; higher-priority checks are not triggered.",
+          "Decision:\n- The fixed label is consistent with the TriggeredRule and the Evidence; rejected causes do not meet their thresholds.",
+          "Decision:\n- This case matches the fixed label per the rubric; the rejection checks show no higher-priority trigger fired.",
+          "Decision:\n- Therefore the fixed label is selected by the deterministic rubric using the provided metrics."
+        ]
+      },
+      "rca_ood": {
+        "backend": "hf",
+        "hf_model": "Qwen/Qwen2.5-7B-Instruct"
+      },
+      "general": {
+        "backend": "hf",
+        "hf_model": "Qwen/Qwen2.5-7B-Instruct"
+      }
+    }
+  },
+  "rca_ood_vote3": {
+    "strategies": [
+      "pev",
+      "cot2",
+      "self_refine"
+    ],
+    "finalize_if_unboxed": true,
+    "max_tokens": 2000,
+    "temperature": 0.3,
+    "trace_prefix": "",
+    "prefix": ""
+  },
+  "csv": {
+    "flatten_newlines_in_cells": true
+  }
+}

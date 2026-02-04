@@ -1,0 +1,18 @@
+# Core utilities
+pandas>=2.0
+numpy>=1.24
+tqdm>=4.66
+requests>=2.31
+
+# LLM / HF stack (Kaggle pre-installed versions recommended)
+transformers>=4.41
+accelerate>=0.30
+datasets>=2.18
+peft>=0.10
+trl>=0.9
+safetensors>=0.4
+sentencepiece>=0.2
+bitsandbytes>=0.42
+
+# Note: Unsloth/xformers removed to prevent Kaggle RAM crashes during install.
+# The code now uses standard PEFT (pre-installed on Kaggle) for inference.
