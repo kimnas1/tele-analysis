@@ -423,6 +423,37 @@ def decide(metrics: Optional[Metrics], status: str) -> tuple[str, str]:
     return "C1", "; ".join(obs + ["decision=C1(fallback)"])
 
 
+class ReasonedPredictor:
+    """
+    Small wrapper class used by other pipeline tools (e.g. trace corpus generator).
+
+    Keeps the underlying logic identical by delegating to the module-level
+    `compute_metrics()` and `decide()` functions and exposing the rubric
+    thresholds as attributes.
+    """
+
+    # Expose rubric thresholds/constants for downstream tooling.
+    THROUGHPUT_LOW_MBPS = THROUGHPUT_LOW_MBPS
+    SPEED_MAX_KMH = SPEED_MAX_KMH
+    RB_MIN = RB_MIN
+    OVERSHOOT_M = OVERSHOOT_M
+    NEIGHBOR_CLOSE_DB = NEIGHBOR_CLOSE_DB
+    MOD30_NEIGHBOR_RSRP_MIN_DBM = MOD30_NEIGHBOR_RSRP_MIN_DBM
+    MOD30_FRAC_MIN = MOD30_FRAC_MIN
+    HANDOVERS_MIN = HANDOVERS_MIN
+    C3_BLOCK_IF_BEYOND_AND_RSRP_LE = C3_BLOCK_IF_BEYOND_AND_RSRP_LE
+    C1_STRONG_TILT_MIN_DEG = C1_STRONG_TILT_MIN_DEG
+    C1_STRONG_RSRP_MAX_DBM = C1_STRONG_RSRP_MAX_DBM
+    C1_STRONG_MIN_ROWS = C1_STRONG_MIN_ROWS
+    C4_DIFF_GNB_CLOSE_FRAC_MIN = C4_DIFF_GNB_CLOSE_FRAC_MIN
+
+    def compute_metrics(self, question_text: str) -> tuple[Optional[Metrics], str]:
+        return compute_metrics(question_text)
+
+    def decide(self, metrics: Optional[Metrics], status: str) -> tuple[str, str]:
+        return decide(metrics, status)
+
+
 def load_truth(path: str) -> dict[str, str]:
     out: dict[str, str] = {}
     with open(path, newline="") as f:
