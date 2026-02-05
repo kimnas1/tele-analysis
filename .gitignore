@@ -58,8 +58,10 @@ tools/rule_trace_corpus_merged/
 tools/lora_qwen_rule_traces/
 tools/lora_qwen_rule_traces_unsloth/
 
-# Large model artifacts (host separately, e.g. HuggingFace or GitHub release assets)
-models/
+# LoRA adapters are tracked via Git LFS (see .gitattributes).
+# Keep full base models out of git (download from HF during runs).
+models/base_models/
+models/**/pytorch_model*.bin
 
 # Challenge data / local submissions (keep out of git)
 SampleSubmission.csv
