@@ -53,7 +53,6 @@ For the runner scripts below, pass `data_dir` that contains (filenames are confi
 - `SampleSubmission.csv`
 - `phase_1_test.csv`
 - `phase_2_test.csv`
-- (optional) `reasoned_predict.py` (if absent, the repo’s `tools/reasoned_predict.py` is used)
 
 ## Model artifacts
 
